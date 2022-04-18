@@ -1,0 +1,72 @@
+# See https://github.com/coreos/fcct/blob/master/docs/configuration-v1_0.md
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    # See https://github.com/coreos/fcct/issues/34#issuecomment-597958199
+    # See https://github.com/coreos/fedora-coreos-tracker/issues/333
+    - path: /etc/hostname
+      mode: 420
+      overwrite: true
+      contents:
+        inline: |
+          ssh-usercert
+    - path: /etc/fedora-coreos-pinger/config.d/99-disable-reporting.toml
+      mode: 0644
+      contents:
+        inline: |
+          [reporting]
+          enabled = false
+    - path: /etc/locale.conf
+      mode: 0644
+      contents:
+        inline: |
+          LANG=en_US.UTF-8
+    - path: /etc/ssh/sshd_config.d/40-host-certificates.conf
+      mode: 0600
+      append:
+        - local: sshd_config.d/40-host-certificates.conf
+    - path: /etc/ssh/sshd_config.d/40-user-certificates.conf
+      mode: 0600
+      append:
+        - local: sshd_config.d/40-user-certificates.conf
+    - path: /etc/ssh/ssh_user_ca.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_user_ca.pub
+    - path: /etc/ssh/ssh_host_ecdsa_key
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_ecdsa_key
+    - path: /etc/ssh/ssh_host_ecdsa_key-cert.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_ecdsa_key-cert.pub
+    - path: /etc/ssh/ssh_host_ecdsa_key.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_ecdsa_key.pub
+    - path: /etc/ssh/ssh_host_ed25519_key
+      mode: 0600
+      append:
+        - local: ssh/ssh_host_ed25519_key
+    - path: /etc/ssh/ssh_host_ed25519_key-cert.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_ed25519_key-cert.pub
+    - path: /etc/ssh/ssh_host_ed25519_key.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_ed25519_key.pub
+    - path: /etc/ssh/ssh_host_rsa_key
+      mode: 0600
+      append:
+        - local: ssh/ssh_host_rsa_key
+    - path: /etc/ssh/ssh_host_rsa_key-cert.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_rsa_key-cert.pub
+    - path: /etc/ssh/ssh_host_rsa_key.pub
+      mode: 0644
+      append:
+        - local: ssh/ssh_host_rsa_key.pub
