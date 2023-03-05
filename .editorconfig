@@ -7,6 +7,6 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{yaml, yml}]
+[*.{yaml,yml}]
 indent_style = space
 tab_width = 2
