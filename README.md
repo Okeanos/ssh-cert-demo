@@ -2,8 +2,7 @@
 
 This repository contains minimal examples showcasing SSH certificates using
 [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/) configurations and scripts that help deploy them on
-[VirtualBox](https://www.virtualbox.org) as well as a functionally identical
-[Docker](https://www.docker.com) based version.
+[VirtualBox](https://www.virtualbox.org) as well as a functionally identical [Docker](https://www.docker.com) based version.
 
 ---
 
@@ -28,7 +27,7 @@ What's included?
 ### Docker with Docker Compose
 
 1. Run the `setup.sh` script to generate an SSH certificate authority & SSH certificates.
-2. Run `docker compose up -d` to start the stack
+2. Run `deploy.sh` to start the stack (includes generating the SSH certificates and `docker compose up -d`)
 
 ### FCOS Based using VirtualBox
 

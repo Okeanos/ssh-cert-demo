@@ -12,7 +12,7 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 usage() {
 	cat <<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-f] -p param_value arg1 [arg2...]
-Script description here.
+Deploy the SSH Certificate example for a particular VM.
 Available options:
 -h, --help             Print this help and exit
 -v, --verbose          Print script debug info
@@ -20,7 +20,7 @@ Available options:
 -e, --debug            Enable extra debugging of the VM via Serial Connection logging
 -n, --name             Name of the VM to create
 -o, --ova              Path where CoreOS image is stored
--p, --prefix           Prefix for the VM names for easier identification in VMWare Fusion, defaults to 'fcos-'
+-p, --prefix           Prefix for the VM names for easier identification in VirtualBox, defaults to 'fcos-'
 -x, --expiry           SSH host certificate expiry, defaults to +3650d
 EOF
 	exit
