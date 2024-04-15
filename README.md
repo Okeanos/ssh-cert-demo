@@ -2,7 +2,8 @@
 
 This repository contains minimal examples showcasing SSH certificates using
 [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/) configurations and scripts that help deploy them on
-[VirtualBox](https://www.virtualbox.org) as well as a functionally identical Docker based version.
+[VirtualBox](https://www.virtualbox.org) as well as a functionally identical
+[Docker](https://www.docker.com) based version.
 
 ---
 
@@ -11,12 +12,14 @@ The shell script template used for the generator scripts is the MIT licensed
 
 ## Required Software
 
-- [bash](https://www.gnu.org/software/bash/) scripting environment
-- [butane](https://github.com/coreos/butane) Fedora CoreOS configuration converter
+- [bash](https://www.gnu.org/software/bash/) scripting environment, preferably a modern version (>=5.0)
+- [butane](https://github.com/coreos/butane) Fedora CoreOS configuration converter when using VirtualBox
 - [curl](https://github.com/curl/curl) curl to download files off of the Internet
+- [Docker](https://www.docker.com) as an alternative to VirtualBox
 - [gpg](https://www.gnupg.org/) OpenPGP implementation for signature checks
 - [jq](https://stedolan.github.io/jq/) JSON parser
 - [ssh](https://www.openssh.com) SSH implementation
+- [VirtualBox](https://www.virtualbox.org) as an alternative to Docker
 
 ## Getting started
 
