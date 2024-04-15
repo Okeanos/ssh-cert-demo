@@ -33,3 +33,10 @@ What's included?
 
 1. Run the `setup.sh` script to download the latest CoreOS image and generate an SSH certificate authority.
 2. Run the `deploy.sh` script for each SSH certificate VM you want to configure and spawn.
+
+### What's next?
+
+Update your `/etc/hosts` file and ensure that your VMs (regardless of Docker or VirtualBox) can be easily reached by DNS
+from your local machine.
+
+The machines all need a name ending in `.local` as TLD to work with the generated SSH certificate authority.
