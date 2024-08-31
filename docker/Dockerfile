@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt-get update && \
 	apt-get install -q=2 -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" --no-install-recommends \
@@ -7,4 +7,3 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN adduser app --home /app --gecos ",,," --disabled-password --system --group
-

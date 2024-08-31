@@ -1,6 +1,4 @@
 {
 	"exclude": [
-		"mvnw",
-		"mvnw.cmd"
 	]
 }

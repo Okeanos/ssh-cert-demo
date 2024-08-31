@@ -1,13 +1,13 @@
 # SSH Certificates Example
 
-This repository contains minimal examples showcasing SSH certificates using
-[Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/) configurations and scripts that help deploy them on
-[VirtualBox](https://www.virtualbox.org) as well as a functionally identical [Docker](https://www.docker.com) based version.
+This repository contains minimal examples showcasing SSH certificates using [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/)
+configurations and scripts that help deploy them on [VirtualBox](https://www.virtualbox.org) as well as a functionally
+identical [Docker](https://www.docker.com) based version.
 
 ---
 
-The shell script template used for the generator scripts is the MIT licensed
-[script-template.sh](https://gist.github.com/m-radzikowski/53e0b39e9a59a1518990e76c2bff8038) by Maciej Radzikowski.
+The shell script template used for the generator scripts is the MIT licensed [script-template.sh](https://gist.github.com/m-radzikowski/53e0b39e9a59a1518990e76c2bff8038)
+by Maciej Radzikowski.
 
 ## Required Software
 
