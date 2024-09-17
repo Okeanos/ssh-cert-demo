@@ -1,7 +1,7 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [plugins]
-	butane = "https://github.com/Okeanos/asdf-butane
+	butane = "https://github.com/Okeanos/asdf-butane"
 	taplo = "https://github.com/Okeanos/asdf-taplo"
 
 # See https://github.com/mise-plugins/registry for what is officially available
