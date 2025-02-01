@@ -19,10 +19,10 @@ Available options:
 -v, --verbose          Print script debug info
 -b, --bu-file          Path to the bu config to use for provisioning
 -e, --debug            Enable extra debugging of the VM via Serial Connection logging
+-l, --library          VMWare Library name to store the VM in (defaults to '~/Virtual Machines.localized')
 -n, --name             Name of the VM to create
 -o, --ova              Path where CoreOS image is stored
--p, --prefix           Prefix for the VM names for easier identification in VirtualBox, defaults to 'fcos-'
--x, --expiry           SSH host certificate expiry, defaults to +3650d
+-p, --prefix           Prefix for the VM names for easier identification in VMWare, defaults to 'fcos-'
 EOF
 	exit
 }
@@ -47,15 +47,20 @@ cleanup() {
 			rm -f "${tmpName}"
 		done
 		if [[ -f "${buInc}/ssh/ssh_user_ca.pub" ]]; then
-			message=$(printf "Removing temporary SSH user signing certificate from '%s'\n" "${buInc}/ssh/ssh_user_ca")
+			message=$(printf "Removing temporary SSH user signing certificate from '%s'\n" "${buInc}/ssh/ssh_user_ca.pub")
 			[[ $verbose == 1 ]] && msg "${message}"
-			rm -f "${buInc}/ssh/ssh_user_ca"
+			rm -f "${buInc}/ssh/ssh_user_ca.pub"
 		fi
 	fi
 	if [[ -n "${ign_config_file}" ]]; then
 		message=$(printf "Removing Ignition file from '%s'\n" "${ign_config_file}")
 		[[ $verbose == 1 ]] && msg "${message}"
 		rm -f "${ign_config_file}"
+	fi
+	if [[ -n "${ign_config_b64_file}" ]]; then
+		message=$(printf "Removing Ignition file from '%s'\n" "${ign_config_b64_file}")
+		[[ $verbose == 1 ]] && msg "${message}"
+		rm -f "${ign_config_b64_file}"
 	fi
 }
 
@@ -84,8 +89,8 @@ parse_params() {
 	# default values of variables set from params
 	bu=''
 	debug=0
-	expiry='+3650d'
 	hostSigningKey=''
+	library=$(realpath --canonicalize-missing "${HOME}/Virtual Machines.localized")
 	name=''
 	ovaFilePath=''
 	prefix='fcos-'
@@ -103,16 +108,16 @@ parse_params() {
 		-e | --debug)
 			debug=1
 			;;
+		-l | --library)
+			library="${2-}"
+			shift
+			;;
 		-n | --name)
 			name="${2-}"
 			shift
 			;;
 		-o | --ova)
 			ovaFilePath="${2-}"
-			shift
-			;;
-		-x | --expiry)
-			expiry="${2-}"
 			shift
 			;;
 		-?*) die "Unknown option: $1" ;;
@@ -153,7 +158,7 @@ ssh-keygen -s "${hostSigningKey}" \
 	-t rsa-sha2-512 \
 	-I "${name} host key" \
 	-n "${name},${name}.local" \
-	-V "-5m:${expiry}" \
+	-V "-5m:+1d" \
 	-h \
 	"${buInc}/ssh/ssh_host_ecdsa_key" \
 	"${buInc}/ssh/ssh_host_ed25519_key" \
@@ -164,30 +169,48 @@ msg "${message}"
 cp -fr "${commonConfig}/." "${buInc}"
 cp -fr "${hostSigningKey}.pub" "${buInc}/ssh/ssh_user_ca.pub"
 
+msg
+
 message=$(printf "Converting bu file '%s' to ign config\n" "${bu}")
 msg "${message}"
 ign_config=$(butane --strict --files-dir="${buInc}" "${bu}")
 ign_config_file=$(realpath --canonicalize-missing "${buDir}/coreos.ign")
 echo "${ign_config}" >"${ign_config_file}"
+ign_config_b64=$(butane --strict --files-dir="${buInc}" "${bu}" | gzip | base64 -w0)
+ign_config_b64_file=$(realpath --canonicalize-missing "${buDir}/coreos.ign.gzip.b64")
+echo "${ign_config_b64}" >"${ign_config_b64_file}"
 
-msg "\nIgnition configuration transpiled and CoreOS Template available; will now deploy to VirtualBox\n\n"
+msg
 
-message=$(printf "Converting bu file '%s' to ign config\n" "${bu}")
-msg "${message}"
-ign_config=$(butane --strict --files-dir="${buInc}" "${bu}")
-
+msg "\nIgnition configuration transpiled and CoreOS Template available; will now deploy to VMWare\n\n"
 message=$(printf "Deploying '%s'\n" "${prefix}${name}")
 msg "${message}"
 
-vboxmanage import "${ovaFilePath}" --vsys 0 --vmname "${prefix}${name}"
-vboxmanage guestproperty set "${prefix}${name}" '/Ignition/Config' "${ign_config}"
+ovftool \
+	--powerOffTarget \
+	--overwrite \
+	--name="${prefix}${name}" \
+	--maxVirtualHardwareVersion=21 \
+	--allowExtraConfig \
+	--extraConfig:guestinfo.hostname="${name}" \
+	--extraConfig:guestinfo.ignition.config.data.encoding="gzip+base64" \
+	--extraConfig:guestinfo.ignition.config.data="${ign_config_b64}" \
+	"${ovaFilePath}" "${library}"
+
+# Migrate to current HW level for better support
+vmcli "${library}/${prefix}${name}.vmwarevm/${prefix}${name}.vmx" configparams setentry 'virtualhw.version' 21
 
 if [[ $debug == 1 ]]; then
-	message=$(printf "Attaching serial port to VM logging to '%s'\n" "${buDir}/coreos.log")
-	msg "${message}"
-	vboxmanage modifyvm "${prefix}${name}" --uart1 0x3F8 4
-	vboxmanage modifyvm "${prefix}${name}" --uartmode1 file "${buDir}/coreos.log"
+	if [[ -f "${script_dir}/${name}/serial-output" ]]; then
+		rm -f "${script_dir}/${name}/serial-output"
+	fi
+	vmcli "${library}/${prefix}${name}.vmwarevm/${prefix}${name}.vmx" serial SetBackingInfo \
+		serial0 \
+		file \
+		"${script_dir}/${name}/serial-output" \
+		'' \
+		server \
+		server
 fi
 
-vboxmanage showvminfo "${prefix}${name}"
-#vboxmanage startvm "${prefix}${name}" --type headless
+vmcli "${library}/${prefix}${name}.vmwarevm/${prefix}${name}.vmx" power start

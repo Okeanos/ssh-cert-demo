@@ -18,7 +18,7 @@ Available options:
 -h, --help             Print this help and exit
 -v, --verbose          Print script debug info
 -d, --download-dir     Path where CoreOS images should be stored
--s, --stream           CoreOS stream (e.g. stable)
+-s, --stream           CoreOS stream (defaults to stable)
 EOF
 	exit
 }
@@ -52,7 +52,7 @@ die() {
 parse_params() {
 	# default values of variables set from params
 	download=''
-	stream=''
+	stream='stable'
 
 	while :; do
 		case "${1-}" in
@@ -102,7 +102,7 @@ fi
 if [[ ! -f "${signing_key}" ]]; then
 	message=$(printf "Downloading the Fedora signing key to '%s'" "${signing_key}")
 	msg "${message}"
-	wget -q -nv "https://getfedora.org/static/fedora.gpg" -O "${signing_key}"
+	curl --silent --show-error "https://getfedora.org/static/fedora.gpg" --output "${signing_key}"
 fi
 
 # Make the signing key useful for verification purposes
@@ -113,12 +113,12 @@ fi
 # Download the CoreOS VM description for the particular stream
 message=$(printf "Downloading stream json to '%s'\n" "${stream_json}")
 msg "${message}"
-wget -q -nv "https://builds.coreos.fedoraproject.org/streams/${stream}.json" -O "${stream_json}"
+curl --silent --show-error "https://builds.coreos.fedoraproject.org/streams/${stream}.json" --output "${stream_json}"
 
-ova_version=$(jq --raw-output '.architectures.x86_64.artifacts.virtualbox.release' "${stream_json}")
-ova_url_location=$(jq --raw-output '.architectures.x86_64.artifacts.virtualbox.formats.ova.disk.location' "${stream_json}")
-ova_url_signature=$(jq --raw-output '.architectures.x86_64.artifacts.virtualbox.formats.ova.disk.signature' "${stream_json}")
-ova_sha256=$(jq --raw-output '.architectures.x86_64.artifacts.virtualbox.formats.ova.disk.sha256' "${stream_json}")
+ova_version=$(jq --raw-output '.architectures.x86_64.artifacts.vmware.release' "${stream_json}")
+ova_url_location=$(jq --raw-output '.architectures.x86_64.artifacts.vmware.formats.ova.disk.location' "${stream_json}")
+ova_url_signature=$(jq --raw-output '.architectures.x86_64.artifacts.vmware.formats.ova.disk.signature' "${stream_json}")
+ova_sha256=$(jq --raw-output '.architectures.x86_64.artifacts.vmware.formats.ova.disk.sha256' "${stream_json}")
 ova_file_path=$(realpath --canonicalize-missing "${download}/coreos-${stream}-${ova_version}.ova")
 ova_file_signature=$(realpath --canonicalize-missing "${download}/coreos-${stream}-${ova_version}.sig")
 message=$(printf "Latest CoreOS Version for stream '%s' is '%s'\n" "${stream}" "${ova_version}")
@@ -128,8 +128,8 @@ msg "${message}"
 if [[ ! -f "${ova_file_path}" ]]; then
 	message=$(printf "Downloading CoreOS Version for stream '%s' with version '%s'\n" "${stream}" "${ova_version}")
 	msg "${message}"
-	wget -q -nv "${ova_url_location}" -O "${ova_file_path}"
-	wget -q -nv "${ova_url_signature}" -O "${ova_file_signature}"
+	curl --silent --show-error "${ova_url_location}" --output "${ova_file_path}"
+	curl --silent --show-error "${ova_url_signature}" --output "${ova_file_signature}"
 fi
 
 message=$(printf "Verifying signature for '%s'\n" "${ova_file_path}")
@@ -142,6 +142,8 @@ message=$(printf "%s %s" "${ova_sha256}" "${ova_file_path}" | sha256sum --check)
 msg "${message}"
 message=$(printf "Latest CoreOS image available at: %s\n" "${ova_file_path}")
 msg "${message}"
+
+msg
 
 # Generating SSH CA
 if [[ ! -d "${ca_dir}" ]]; then

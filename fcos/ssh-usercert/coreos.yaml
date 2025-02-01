@@ -1,6 +1,6 @@
-# See https://github.com/coreos/fcct/blob/master/docs/configuration-v1_0.md
+# See https://github.com/coreos/butane/blob/main/docs/config-fcos-v1_6.md
 variant: fcos
-version: 1.4.0
+version: 1.6.0
 storage:
   files:
     # See https://github.com/coreos/fcct/issues/34#issuecomment-597958199
@@ -11,6 +11,18 @@ storage:
       contents:
         inline: |
           ssh-usercert
+    - path: /etc/NetworkManager/system-connections/ens192.nmconnection
+      mode: 0600
+      overwrite: true
+      contents:
+        inline: |
+          [connection]
+          id=ens192
+          type=ethernet
+          interface-name=ens192
+          [ipv4]
+          addresses=192.168.188.30/24
+          method=auto
     - path: /etc/fedora-coreos-pinger/config.d/99-disable-reporting.toml
       mode: 0644
       contents:
@@ -70,3 +82,8 @@ storage:
       mode: 0644
       append:
         - local: ssh/ssh_host_rsa_key.pub
+systemd:
+  units:
+    - name: rpm-ostree-install-tools.service
+      enabled: true
+      contents_local: systemd/rpm-ostree-install-tools.service
