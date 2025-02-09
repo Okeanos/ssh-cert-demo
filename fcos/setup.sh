@@ -90,6 +90,8 @@ stream_json=$(realpath --canonicalize-missing "${download}/${stream}.json")
 ova_version=''
 ca_dir=$(realpath --canonicalize-missing "${script_dir}/ca")
 ca_file=$(realpath --canonicalize-missing "${ca_dir}/ca")
+client_dir=$(realpath --canonicalize-missing "${script_dir}/client")
+client_file=$(realpath --canonicalize-missing "${client_dir}/client")
 
 # Init download directory if it doesn't exist
 if [[ ! -d "${download}" ]]; then
@@ -156,12 +158,43 @@ if [[ ! -f "${ca_file}" ]]; then
 	message=$(printf "Generating OpenSSH CA Key Pair at %s\n" "${ca_dir}")
 	msg "${message}"
 
-	ssh-keygen -f "${ca_file}" \
+	ssh-keygen -q -f "${ca_file}" \
 		-t rsa \
 		-b 4096 \
 		-N "" \
 		-C "Demo CA"
 fi
 
-message=$(printf "Please add '@cert-authority ssh-*.local %s' to your known_hosts file\n" "$(cat "${ca_file}.pub")")
-msg "${message}"
+# Generating SSH client
+if [[ ! -d "${client_dir}" ]]; then
+	message=$(printf "Ensuring that SSH client directory '%s' exists.\n" "${client_dir}")
+	msg "${message}"
+	mkdir -p "${client_dir}"
+fi
+
+if [[ ! -f "${client_file}" ]]; then
+	message=$(printf "Generating OpenSSH client Key Pair at %s\n" "${client_dir}")
+	msg "${message}"
+
+	ssh-keygen -q -f "${client_file}" \
+		-t ed25519 \
+		-N "" \
+		-C "Demo Client Key"
+
+	msg "Signing client Key Pair with CA"
+	ssh-keygen -q -s "${ca_file}" \
+		-t rsa-sha2-512 \
+		-I "core client key" \
+		-n "core,root" \
+		-V "-5m:+1d" \
+		-O "no-x11-forwarding" \
+		-O "no-agent-forwarding" \
+		"${client_dir}/client"
+
+	# moving certificate to a different location to prevent auto-loading
+	mv "${client_dir}/client-cert.pub" "${client_dir}/client-certificate.pub"
+	ca_cert=$(cat "${ca_file}.pub")
+	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
+fi
+
+msg "Done"

@@ -51,6 +51,11 @@ cleanup() {
 			[[ $verbose == 1 ]] && msg "${message}"
 			rm -f "${buInc}/ssh/ssh_user_ca.pub"
 		fi
+		if [[ -f "${buInc}/client/client.pub" ]]; then
+			message=$(printf "Removing temporary SSH user public key from '%s'\n" "${buInc}/client/client.pub")
+			[[ $verbose == 1 ]] && msg "${message}"
+			rm -f "${buInc}/client/client.pub"
+		fi
 	fi
 	if [[ -n "${ign_config_file}" ]]; then
 		message=$(printf "Removing Ignition file from '%s'\n" "${ign_config_file}")
@@ -143,18 +148,19 @@ buDir=$(dirname "${bu}")
 buInc=$(realpath --canonicalize-missing "${buDir}/includes")
 commonConfig=$(realpath --canonicalize-missing "${buDir}/../common")
 hostSigningKey=$(realpath --canonicalize-missing "${buDir}/../ca/ca")
+clientKey=$(realpath --canonicalize-missing "${buDir}/../client/client.pub")
 [[ ! -f "${hostSigningKey-}" ]] && die "Parameter 'host-signing-key' does not point to an existing SSH key file"
 ign_config=''
 ovaFilePath=$(realpath --canonicalize-missing "${ovaFilePath}")
 [[ ! -f "${ovaFilePath-}" ]] && die "Parameter 'ova' does not point to an existing CoreOS image file"
 
 msg "Creating SSH Host Keys"
-ssh-keygen -t ecdsa -N "" -f "${buInc}/ssh/ssh_host_ecdsa_key" -C "${name},${name}.local"
-ssh-keygen -t ed25519 -N "" -f "${buInc}/ssh/ssh_host_ed25519_key" -C "${name},${name}.local"
-ssh-keygen -t rsa -b 4096 -N "" -f "${buInc}/ssh/ssh_host_rsa_key" -C "${name},${name}.local"
+ssh-keygen -q -t ecdsa -N "" -f "${buInc}/ssh/ssh_host_ecdsa_key" -C "${name},${name}.local"
+ssh-keygen -q -t ed25519 -N "" -f "${buInc}/ssh/ssh_host_ed25519_key" -C "${name},${name}.local"
+ssh-keygen -q -t rsa -b 4096 -N "" -f "${buInc}/ssh/ssh_host_rsa_key" -C "${name},${name}.local"
 
 msg "Creating signed SSH certificates"
-ssh-keygen -s "${hostSigningKey}" \
+ssh-keygen -q -s "${hostSigningKey}" \
 	-t rsa-sha2-512 \
 	-I "${name} host key" \
 	-n "${name},${name}.local" \
@@ -168,6 +174,7 @@ message=$(printf "Temporarily copying common config from '%s' to '%s'\n" "${comm
 msg "${message}"
 cp -fr "${commonConfig}/." "${buInc}"
 cp -fr "${hostSigningKey}.pub" "${buInc}/ssh/ssh_user_ca.pub"
+cp -fr "${clientKey}" "${buInc}/client/client.pub"
 
 msg
 

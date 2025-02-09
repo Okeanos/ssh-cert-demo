@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2034
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+
 # see https://man.openbsd.org/ssh_config for details for each option
 # This file temporarily overrides a number of SSH settings so that the SSH certificate
 # demo works as intended
@@ -9,10 +12,12 @@
 SSH_ARGS=(
 	-o AddKeysToAgent=no
 	-o HashKnownHosts=no
-	-o GlobalKnownHostsFile=/dev/null
+	-o GlobalKnownHostsFile="${script_dir}/client/known_cas"
 	-o UserKnownHostsFile="${script_dir}/client/known_hosts"
 	-o User=core
 	-i "${script_dir}/client/client"
+	-o CertificateFile="${script_dir}/client/client-certificate.pub"
+	-o ForwardAgent=yes
 	-v
 )
 alias ssh='ssh "${SSH_ARGS[@]}"'

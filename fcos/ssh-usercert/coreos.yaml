@@ -11,18 +11,18 @@ storage:
       contents:
         inline: |
           ssh-usercert
-    - path: /etc/NetworkManager/system-connections/ens192.nmconnection
-      mode: 0600
-      overwrite: true
-      contents:
-        inline: |
-          [connection]
-          id=ens192
-          type=ethernet
-          interface-name=ens192
-          [ipv4]
-          addresses=192.168.188.30/24
-          method=auto
+#    - path: /etc/NetworkManager/system-connections/ens192.nmconnection
+#      mode: 0600
+#      overwrite: true
+#      contents:
+#        inline: |
+#          [connection]
+#          id=ens192
+#          type=ethernet
+#          interface-name=ens192
+#          [ipv4]
+#          addresses=192.168.188.30/24
+#          method=auto
     - path: /etc/fedora-coreos-pinger/config.d/99-disable-reporting.toml
       mode: 0644
       contents:
@@ -87,3 +87,8 @@ systemd:
     - name: rpm-ostree-install-tools.service
       enabled: true
       contents_local: systemd/rpm-ostree-install-tools.service
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys_local:
+        - client/client.pub

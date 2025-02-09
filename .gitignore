@@ -199,3 +199,5 @@ ssh_user_*
 # CA structure files
 ca/
 !ca/.gitkeep
+client/
+!client/.gitkeep

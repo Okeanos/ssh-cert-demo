@@ -11,18 +11,18 @@ storage:
       contents:
         inline: |
           ssh-hostcert
-    - path: /etc/NetworkManager/system-connections/ens192.nmconnection
-      mode: 0600
-      overwrite: true
-      contents:
-        inline: |
-          [connection]
-          id=ens192
-          type=ethernet
-          interface-name=ens192
-          [ipv4]
-          addresses=192.168.188.29/24
-          method=auto
+#    - path: /etc/NetworkManager/system-connections/ens192.nmconnection
+#      mode: 0600
+#      overwrite: true
+#      contents:
+#        inline: |
+#          [connection]
+#          id=ens192
+#          type=ethernet
+#          interface-name=ens192
+#          [ipv4]
+#          addresses=192.168.188.29/24
+#          method=auto
     - path: /etc/fedora-coreos-pinger/config.d/99-disable-reporting.toml
       mode: 0644
       contents:
@@ -39,7 +39,7 @@ storage:
       append:
         - local: sshd_config.d/40-host-certificates.conf
     - path: /etc/ssh/ssh_host_ecdsa_key
-      mode: 0600
+      mode: 0644
       append:
         - local: ssh/ssh_host_ecdsa_key
     - path: /etc/ssh/ssh_host_ecdsa_key-cert.pub
@@ -82,5 +82,5 @@ systemd:
 passwd:
   users:
     - name: core
-      ssh_authorized_keys:
-        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOwrbALwdcxFqYoBC51E5zJpdb6MvZfENo6MhM2zU6IW Nikolas Grottendieck
+      ssh_authorized_keys_local:
+        - client/client.pub
