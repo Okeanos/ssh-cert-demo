@@ -20,10 +20,6 @@ on:
         description: Run Gitleaks (Secret scanner)
         default: true
         type: boolean
-      hadolint:
-        description: Run hadolint (Dockerfile linter)
-        default: true
-        type: boolean
       markdownlint:
         description: Run Markdown linter
         default: true
@@ -94,7 +90,7 @@ jobs:
             https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-linux-amd64.tar.gz
           echo "${EDITORCONFIG_CHECKER_SHASUM} editorconfig.tar.gz" | sha256sum --check
           tar -xzf editorconfig.tar.gz bin/ec-linux-amd64
-          ./bin/ec-linux-amd64 --exclude .git
+          ./bin/ec-linux-amd64 .
   gitleaks:
     runs-on: ubuntu-latest
     if: ${{ inputs.gitleaks || true }}
@@ -117,15 +113,6 @@ jobs:
           echo "${GITLEAKS_SHASUM} gitleaks.tar.gz" | sha256sum --check
           tar -xzf gitleaks.tar.gz gitleaks
           ./gitleaks dir --verbose --redact .
-  hadolint:
-    runs-on: ubuntu-latest
-    if: ${{ inputs.hadolint || false }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: "docker/Dockerfile"
   markdownlint:
     runs-on: ubuntu-latest
     if: ${{ inputs.markdownlint || true }}
