@@ -92,6 +92,7 @@ ca_dir=$(realpath --canonicalize-missing "${script_dir}/ca")
 ca_file=$(realpath --canonicalize-missing "${ca_dir}/ca")
 client_dir=$(realpath --canonicalize-missing "${script_dir}/client")
 client_file=$(realpath --canonicalize-missing "${client_dir}/client")
+client_cert_file=$(realpath --canonicalize-missing "${client_dir}/client_cert")
 
 # Init download directory if it doesn't exist
 if [[ ! -d "${download}" ]]; then
@@ -181,18 +182,26 @@ if [[ ! -f "${client_file}" ]]; then
 		-N "" \
 		-C "Demo Client Key"
 
+	ca_cert=$(cat "${ca_file}.pub")
+	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
+fi
+
+if [[ ! -f "${client_cert_file}" ]]; then
+	message=$(printf "Generating OpenSSH client Key Pair at %s\n" "${client_dir}")
+	msg "${message}"
+
+	cp "${client_file}" "${client_cert_file}"
+
 	msg "Signing client Key Pair with CA"
 	ssh-keygen -q -s "${ca_file}" \
 		-t rsa-sha2-512 \
-		-I "core client key" \
+		-I "core client cert key" \
 		-n "core" \
 		-V "-5m:+1d" \
 		-O "no-x11-forwarding" \
 		-O "no-agent-forwarding" \
-		"${client_dir}/client"
+		"${client_dir}/client_cert"
 
-	# moving certificate to a different location to prevent auto-loading
-	mv "${client_dir}/client-cert.pub" "${client_dir}/client-certificate.pub"
 	ca_cert=$(cat "${ca_file}.pub")
 	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
 fi

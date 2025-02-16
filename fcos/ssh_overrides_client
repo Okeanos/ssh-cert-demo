@@ -16,8 +16,8 @@ SSH_ARGS=(
 	-o GlobalKnownHostsFile="${script_dir}/client/known_cas"
 	-o UserKnownHostsFile="${script_dir}/client/known_hosts"
 	-o User=core
-	-i "${script_dir}/client/client"
-	-o CertificateFile="${script_dir}/client/client-cert.pub"
+	-i "${script_dir}/client/client_cert"
+	-o CertificateFile="${script_dir}/client/client_cert-cert.pub"
 	-v
 )
 alias ssh='ssh "${SSH_ARGS[@]}"'
