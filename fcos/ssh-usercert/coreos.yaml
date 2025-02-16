@@ -42,6 +42,11 @@ storage:
       mode: 0600
       append:
         - local: sshd_config.d/40-user-certificates.conf
+    - path: /etc/ssh/ssh_user_ca_revoked_keys
+      mode: 0600
+      contents:
+        inline: |
+          # List of revoked user keys
     - path: /etc/ssh/ssh_user_ca.pub
       mode: 0644
       append:
