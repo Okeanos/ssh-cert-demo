@@ -185,7 +185,7 @@ if [[ ! -f "${client_file}" ]]; then
 	ssh-keygen -q -s "${ca_file}" \
 		-t rsa-sha2-512 \
 		-I "core client key" \
-		-n "core,root" \
+		-n "core" \
 		-V "-5m:+1d" \
 		-O "no-x11-forwarding" \
 		-O "no-agent-forwarding" \
