@@ -95,5 +95,3 @@ systemd:
 passwd:
   users:
     - name: core
-      ssh_authorized_keys_local:
-        - client/client.pub
