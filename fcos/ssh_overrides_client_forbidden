@@ -16,7 +16,7 @@ SSH_ARGS=(
 	-o UserKnownHostsFile="${script_dir}/client/known_hosts"
 	-o User=core
 	-i "${script_dir}/client/client"
-	-o CertificateFile="${script_dir}/client/client-certificate.pub"
+	-o CertificateFile="${script_dir}/client/client-cert.pub"
 	-o ForwardAgent=yes
 	-v
 )
