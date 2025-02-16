@@ -10,7 +10,8 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 # Uses an alias because SSH settings cannot be set via shell exports
 # https://stackoverflow.com/a/56960067/2920585
 SSH_ARGS=(
-	-o AddKeysToAgent=no
+	-o SetEnv=TERM=xterm-256color
+	-o AddKeysToAgent=yes
 	-o HashKnownHosts=no
 	-o GlobalKnownHostsFile="${script_dir}/client/known_cas"
 	-o UserKnownHostsFile="${script_dir}/client/known_hosts"
