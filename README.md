@@ -50,4 +50,4 @@ SSH Certificates!
 
 - [HashiCorp Vault](https://developer.hashicorp.com/vault/docs/secrets/ssh/signed-ssh-certificates)
 - [smallstep ca](https://smallstep.com/docs/step-ca/#ssh-certificate-authority)
-- [KeePassXC Feature Request](https://github.com/keepassxreboot/keepassxc/issues/5486) 
+- [KeePassXC Feature Request](https://github.com/keepassxreboot/keepassxc/issues/5486)
