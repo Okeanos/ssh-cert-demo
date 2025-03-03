@@ -39,15 +39,15 @@ Technically, DHCP + local DNS is supposed to take care of this but … you never
 
 SSH Certificates!
 
-* [OpenSSH on Certificates](https://man.openbsd.org/ssh-keygen.1#CERTIFICATES)
-* [Fedora on Using OpenSSH Certificate Authentication](https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/infrastructure-services/OpenSSH/#sec-Using_OpenSSH_Certificate_Authentication)
-* [Using a CA with SSH](https://www.lorier.net/docs/ssh-ca.html)
-* [How to create an SSH certificate authority](https://jameshfisher.com/2018/03/16/how-to-create-an-ssh-certificate-authority/)
-* [If you’re not using SSH certificates you’re doing SSH wrong](https://smallstep.com/blog/use-ssh-certificates/)
-* [Managing servers with OpenSSH Certificate Authority](https://ibug.io/blog/2019/12/manage-servers-with-ssh-ca/)
+- [OpenSSH on Certificates](https://man.openbsd.org/ssh-keygen.1#CERTIFICATES)
+- [Fedora on Using OpenSSH Certificate Authentication](https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/infrastructure-services/OpenSSH/#sec-Using_OpenSSH_Certificate_Authentication)
+- [Using a CA with SSH](https://www.lorier.net/docs/ssh-ca.html)
+- [How to create an SSH certificate authority](https://jameshfisher.com/2018/03/16/how-to-create-an-ssh-certificate-authority/)
+- [If you’re not using SSH certificates you’re doing SSH wrong](https://smallstep.com/blog/use-ssh-certificates/)
+- [Managing servers with OpenSSH Certificate Authority](https://ibug.io/blog/2019/12/manage-servers-with-ssh-ca/)
 
 ### Tools
 
-* [HashiCorp Vault](https://developer.hashicorp.com/vault/docs/secrets/ssh/signed-ssh-certificates)
-* [smallstep ca](https://smallstep.com/docs/step-ca/#ssh-certificate-authority)
-* [KeePassXC Feature Request](https://github.com/keepassxreboot/keepassxc/issues/5486) 
+- [HashiCorp Vault](https://developer.hashicorp.com/vault/docs/secrets/ssh/signed-ssh-certificates)
+- [smallstep ca](https://smallstep.com/docs/step-ca/#ssh-certificate-authority)
+- [KeePassXC Feature Request](https://github.com/keepassxreboot/keepassxc/issues/5486) 
