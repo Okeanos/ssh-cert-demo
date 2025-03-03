@@ -105,7 +105,7 @@ fi
 if [[ ! -f "${signing_key}" ]]; then
 	message=$(printf "Downloading the Fedora signing key to '%s'" "${signing_key}")
 	msg "${message}"
-	curl --silent --show-error "https://getfedora.org/static/fedora.gpg" --output "${signing_key}"
+	curl --silent --show-error "https://fedoraproject.org/fedora.gpg" --output "${signing_key}"
 fi
 
 # Make the signing key useful for verification purposes
