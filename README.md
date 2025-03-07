@@ -111,7 +111,8 @@ Inspecting the generated certificate:
 ssh-keygen -L -f id_ed25519-cert.pub
 ```
 
-Load the ED25519 key pair into the ssh-agent, that includes the `-cert.pub` file automatically based on the default file patterns: 
+Load the ED25519 key pair into the ssh-agent, that includes the `-cert.pub` file automatically based on the default file
+patterns:
 
 ```shell
 ssh-add id_ed25519
