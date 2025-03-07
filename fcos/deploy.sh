@@ -57,12 +57,12 @@ cleanup() {
 			rm -f "${buInc}/client/client.pub"
 		fi
 	fi
-	if [[ -n "${ign_config_file}" ]]; then
+	if [[ -n "${ign_config_file-}" ]]; then
 		message=$(printf "Removing Ignition file from '%s'\n" "${ign_config_file}")
 		[[ $verbose == 1 ]] && msg "${message}"
 		rm -f "${ign_config_file}"
 	fi
-	if [[ -n "${ign_config_b64_file}" ]]; then
+	if [[ -n "${ign_config_b64_file-}" ]]; then
 		message=$(printf "Removing Ignition file from '%s'\n" "${ign_config_b64_file}")
 		[[ $verbose == 1 ]] && msg "${message}"
 		rm -f "${ign_config_b64_file}"
