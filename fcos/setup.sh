@@ -187,7 +187,7 @@ if [[ ! -f "${client_file}" ]]; then
 fi
 
 if [[ ! -f "${client_cert_file}" ]]; then
-	message=$(printf "Generating OpenSSH client Key Pair at %s\n" "${client_dir}")
+	message=$(printf "Generating OpenSSH client certificate at %s\n" "${client_dir}")
 	msg "${message}"
 
 	cp "${client_file}" "${client_cert_file}"

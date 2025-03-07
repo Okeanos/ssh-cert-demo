@@ -51,3 +51,86 @@ SSH Certificates!
 - [HashiCorp Vault](https://developer.hashicorp.com/vault/docs/secrets/ssh/signed-ssh-certificates)
 - [smallstep ca](https://smallstep.com/docs/step-ca/#ssh-certificate-authority)
 - [KeePassXC Feature Request](https://github.com/keepassxreboot/keepassxc/issues/5486)
+
+### Some Useful Commands
+
+Generate an RSA key pair in the current directory named id_rsa
+
+```shell
+ssh-keygen -q -f id_rsa \
+  -t rsa \
+  -b 4096 \
+  -N "" \
+  -C "Demo CA"
+```
+
+Generate an ED25519 key pair in the current directory named `id_ed25519`:
+
+```shell
+ssh-keygen -q -f id_ed25519 \
+  -t ed25519 \
+  -N "" \
+  -C "Demo ED25519 Client Key"
+```
+
+Generate an ECDSA key pair in the current directory named `id_ecdsa`:
+
+```shell
+ssh-keygen -q -f id_ecdsa \
+  -t ecdsa \
+  -N "" \
+  -C "Demo ECDSA Client Key"
+```
+
+Signing the ECDSA key pair with the RSA key, i.e. creating a certificate, of kind host certificate:
+
+```shell
+ssh-keygen -q -s id_rsa \
+  -t rsa-sha2-512 \
+  -I "Key ID" \
+  -n "host,host.local" \
+  -V "-5m:+1d" \
+  -h \
+  id_ecdsa.pub
+```
+
+Signing the ED25519 key pair with the RSA key, i.e. creating a certificate, of kind user certificate:
+
+```shell
+ssh-keygen -q -s id_rsa \
+  -t rsa-sha2-512 \
+  -I "Key ID" \
+  -n "Valid,Principals" \
+  -V "-5m:+1d" \
+  id_ed25519.pub
+```
+
+Inspecting the generated certificate:
+
+```shell
+ssh-keygen -L -f id_ed25519-cert.pub
+```
+
+Load the ED25519 key pair into the ssh-agent, that includes the `-cert.pub` file automatically based on the default file patterns: 
+
+```shell
+ssh-add id_ed25519
+```
+
+Show what's loaded in the ssh-agent:
+
+```shell
+ssh-add -L
+```
+
+Delete all loaded keys from the ssh-agent:
+
+```shell
+ssh-add -D
+```
+
+Delete the id_ed25519 key pair and cert from the ssh-agent:
+
+```shell
+ssh-add -D
+```
