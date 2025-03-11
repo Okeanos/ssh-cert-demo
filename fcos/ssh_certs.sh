@@ -76,13 +76,19 @@ client_dir=$(realpath --canonicalize-missing "${script_dir}/client")
 client_file=$(realpath --canonicalize-missing "${client_dir}/client")
 client_cert_file=$(realpath --canonicalize-missing "${client_dir}/client_cert")
 
-# Generating SSH CA
 if [[ ! -d "${ca_dir}" ]]; then
 	message=$(printf "Ensuring that SSH ca directory '%s' exists.\n" "${ca_dir}")
 	msg "${message}"
 	mkdir -p "${ca_dir}"
 fi
 
+if [[ ! -d "${client_dir}" ]]; then
+	message=$(printf "Ensuring that SSH client directory '%s' exists.\n" "${client_dir}")
+	msg "${message}"
+	mkdir -p "${client_dir}"
+fi
+
+# Generating SSH CA
 if [[ ! -f "${ca_file}" ]]; then
 	message=$(printf "Generating OpenSSH CA Key Pair at %s\n" "${ca_dir}")
 	msg "${message}"
@@ -92,15 +98,12 @@ if [[ ! -f "${ca_file}" ]]; then
 		-b 4096 \
 		-N "" \
 		-C "Demo CA"
+
+	ca_cert=$(cat "${ca_file}.pub")
+	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
 fi
 
 # Generating SSH client
-if [[ ! -d "${client_dir}" ]]; then
-	message=$(printf "Ensuring that SSH client directory '%s' exists.\n" "${client_dir}")
-	msg "${message}"
-	mkdir -p "${client_dir}"
-fi
-
 if [[ ! -f "${client_file}" ]]; then
 	message=$(printf "Generating OpenSSH client Key Pair at %s\n" "${client_dir}")
 	msg "${message}"
@@ -109,12 +112,9 @@ if [[ ! -f "${client_file}" ]]; then
 		-t ed25519 \
 		-N "" \
 		-C "Demo Client Key"
-
-	ca_cert=$(cat "${ca_file}.pub")
-	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
 fi
 
-if [[ ! -f "${client_cert_file}" ]]; then
+if [[ ! -f "${client_cert_file}-cert.pub" ]]; then
 	message=$(printf "Generating OpenSSH client certificate at %s\n" "${client_dir}")
 	msg "${message}"
 
@@ -130,9 +130,6 @@ if [[ ! -f "${client_cert_file}" ]]; then
 		-O "no-agent-forwarding" \
 		-O "no-port-forwarding"
 		"${client_dir}/client_cert"
-
-	ca_cert=$(cat "${ca_file}.pub")
-	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
 fi
 
 msg "Done"
