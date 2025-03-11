@@ -128,7 +128,7 @@ if [[ ! -f "${client_cert_file}-cert.pub" ]]; then
 		-V "-5m:+1d" \
 		-O "no-x11-forwarding" \
 		-O "no-agent-forwarding" \
-		-O "no-port-forwarding"
+		-O "no-port-forwarding" \
 		"${client_dir}/client_cert"
 fi
 
