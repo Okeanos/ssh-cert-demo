@@ -88,11 +88,6 @@ download=$(realpath --canonicalize-missing "${download}")
 signing_key=$(realpath --canonicalize-missing "${download}/fedora.asc")
 stream_json=$(realpath --canonicalize-missing "${download}/${stream}.json")
 ova_version=''
-ca_dir=$(realpath --canonicalize-missing "${script_dir}/ca")
-ca_file=$(realpath --canonicalize-missing "${ca_dir}/ca")
-client_dir=$(realpath --canonicalize-missing "${script_dir}/client")
-client_file=$(realpath --canonicalize-missing "${client_dir}/client")
-client_cert_file=$(realpath --canonicalize-missing "${client_dir}/client_cert")
 
 # Init download directory if it doesn't exist
 if [[ ! -d "${download}" ]]; then
