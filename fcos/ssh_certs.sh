@@ -98,7 +98,9 @@ if [[ ! -f "${ca_file}" ]]; then
 		-b 4096 \
 		-N "" \
 		-C "Demo CA"
+fi
 
+if [[ ! -f "${client_dir}/known_cas" ]]; then
 	ca_cert=$(cat "${ca_file}.pub")
 	printf "@cert-authority ssh-* %s" "${ca_cert}" >"${client_dir}/known_cas"
 fi
@@ -126,9 +128,8 @@ if [[ ! -f "${client_cert_file}-cert.pub" ]]; then
 		-I "core client cert key" \
 		-n "core" \
 		-V "-5m:+1d" \
-		-O "no-x11-forwarding" \
-		-O "no-agent-forwarding" \
-		-O "no-port-forwarding" \
+		-O clear \
+		-O force-command="/usr/bin/id" \
 		"${client_dir}/client_cert"
 fi
 
