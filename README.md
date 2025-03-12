@@ -45,6 +45,7 @@ SSH Certificates!
 - [How to create an SSH certificate authority](https://jameshfisher.com/2018/03/16/how-to-create-an-ssh-certificate-authority/)
 - [If you’re not using SSH certificates you’re doing SSH wrong](https://smallstep.com/blog/use-ssh-certificates/)
 - [Managing servers with OpenSSH Certificate Authority](https://ibug.io/blog/2019/12/manage-servers-with-ssh-ca/)
+- [Using SSH certificates - revisited](https://www.sweharris.org/post/2022-02-06-ssh-certs-again/)
 
 ### Tools
 
