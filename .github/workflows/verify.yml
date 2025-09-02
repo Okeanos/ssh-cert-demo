@@ -73,6 +73,7 @@ jobs:
             --location "https://github.com/coreos/butane/releases/download/v${BUTANE_VERSION}/butane-x86_64-unknown-linux-gnu.asc" \
             --output "butane.asc"
           curl --silent --show-error "https://fedoraproject.org/fedora.gpg" --output "fedora.gpg"
+          export GNUPGHOME=.
           gpg --import "fedora.gpg"
           gpg --verify "butane.asc" "butane"
           chmod +x ./butane
